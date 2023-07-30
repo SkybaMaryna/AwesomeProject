@@ -13,10 +13,17 @@ import {
 } from "react-native";
 import { useFonts } from "expo-font";
 
+const initialState = {
+    email: "",
+    password: "",
+  };
+
 const LoginScreen = () => {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [isPasswordShown, setIsPasswordShown] = useState(false);
+  const [loginData, setLoginData] = useState(initialState);
   const [fontsLoaded] = useFonts({
     "Roboto-Regular": require("../../assets/fonts/Roboto-Regular.ttf"),
     "Roboto-Medium": require("../../assets/fonts/Roboto-Medium.ttf"),
@@ -27,6 +34,11 @@ const LoginScreen = () => {
     Keyboard.dismiss();
     setIsShowKeyboard(false);
   };
+
+  const handleSubmit =()=> {
+    console.log(loginData);
+    setLoginData(initialState);
+  }
 
   const handleEmailFocus = () => {
     setIsShowKeyboard(true);
@@ -51,6 +63,7 @@ const LoginScreen = () => {
         >
           <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : "height"}
+            style={styles.avoidContainer}
           >
             <View
               style={{ ...styles.form, marginBottom: isShowKeyboard ? 50 : 0 }}
@@ -63,12 +76,21 @@ const LoginScreen = () => {
                   borderColor: isEmailFocused ? "#FF6C00" : "#E8E8E8",
                   backgroundColor: isEmailFocused ? "#FFFFFF" : "#F6F6F6",
                 }}
+                autoComplete="email"
                 placeholder="Адреса електронної пошти"
                 placeholderTextColor="#BDBDBD"
+                cursorColor={"#BDBDBD"}
+                value={loginData.email}
                 onFocus={handleEmailFocus}
                 onBlur={() => {
                   setIsEmailFocused(false);
                 }}
+                onChangeText={(value) => {
+                    setLoginData((prevState) => ({
+                      ...prevState,
+                      email: value,
+                    }));
+                  }}
               ></TextInput>
               <View>
                 <TextInput
@@ -78,23 +100,33 @@ const LoginScreen = () => {
                     position: "relative",
                     borderColor: isPasswordFocused ? "#FF6C00" : "#E8E8E8",
                     backgroundColor: isPasswordFocused ? "#FFFFFF" : "#F6F6F6",
+                    paddingEnd: 95,
                   }}
+                  autoComplete="password"
                   placeholder="Пароль"
-                  secureTextEntry={true}
+                  secureTextEntry={isPasswordShown ? false : true}
                   placeholderTextColor="#BDBDBD"
+                  cursorColor={"#BDBDBD"}
+                  value={loginData.password}
                   onFocus={handlePasswordFocus}
                   onBlur={() => {
                     setIsPasswordFocused(false);
                   }}
+                  onChangeText={(value) => {
+                    setLoginData((prevState) => ({
+                      ...prevState,
+                      password: value,
+                    }));
+                  }}
                 ></TextInput>
-                <TouchableOpacity style={styles.inputBtn} activeOpacity={0.7}>
-                  <Text style={styles.inputBtnTitle}>Показати</Text>
+                <TouchableOpacity style={styles.inputBtn} activeOpacity={0.7} onPress={() => setIsPasswordShown(!isPasswordShown)}>
+                  <Text style={styles.inputBtnTitle}>{isPasswordShown ? "Сховати" : "Показати"}</Text>
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
                 style={styles.btn}
                 activeOpacity={0.7}
-                onPress={keyboardHide}
+                onPress={handleSubmit}
               >
                 <Text style={styles.btnTitle}>Увійти</Text>
               </TouchableOpacity>
@@ -122,6 +154,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     alignItems: "stretch",
+  },
+  avoidContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
   },
   form: {
     width: "auto",
