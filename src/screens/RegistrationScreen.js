@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 import {
   StyleSheet,
   Text,
@@ -6,39 +7,43 @@ import {
   ImageBackground,
   TextInput,
   TouchableOpacity,
+  Image,
   KeyboardAvoidingView,
   Platform,
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
-import { useFonts } from "expo-font";
 
 const initialState = {
-    email: "",
-    password: "",
-  };
+  login: "",
+  email: "",
+  password: "",
+};
 
-const LoginScreen = () => {
+const RegistrationScreen = () => {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+  const [isLoginFocused, setIsLoginFocused] = useState(false);
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [isPasswordShown, setIsPasswordShown] = useState(false);
-  const [loginData, setLoginData] = useState(initialState);
-  const [fontsLoaded] = useFonts({
-    "Roboto-Regular": require("../../assets/fonts/Roboto-Regular.ttf"),
-    "Roboto-Medium": require("../../assets/fonts/Roboto-Medium.ttf"),
-    "Roboto-Bold": require("../../assets/fonts/Roboto-Bold.ttf"),
-  });
+  const [registerData, setRegisterData] = useState(initialState);
+  const navigation = useNavigation();
 
   const keyboardHide = () => {
     Keyboard.dismiss();
     setIsShowKeyboard(false);
   };
 
-  const handleSubmit =()=> {
-    console.log(loginData);
-    setLoginData(initialState);
-  }
+  const handleSubmit = () => {
+    console.log(registerData);
+    setRegisterData(initialState);
+    navigation.navigate("Home");
+  };
+
+  const handleLoginFocus = () => {
+    setIsShowKeyboard(true);
+    setIsLoginFocused(true);
+  };
 
   const handleEmailFocus = () => {
     setIsShowKeyboard(true);
@@ -50,9 +55,6 @@ const LoginScreen = () => {
     setIsPasswordFocused(true);
   };
 
-  if (!fontsLoaded) {
-    return null;
-  }
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
@@ -66,9 +68,35 @@ const LoginScreen = () => {
             style={styles.avoidContainer}
           >
             <View
-              style={{ ...styles.form, marginBottom: isShowKeyboard ? 50 : 0 }}
+              style={{ ...styles.form, marginBottom: isShowKeyboard ? 116 : 0 }}
             >
-              <Text style={styles.title}>Увійти</Text>
+              <Image
+                source={require("../../assets/images/addPhoto.png")}
+                style={styles.image}
+              />
+              <Text style={styles.title}>Реєстрація</Text>
+              <TextInput
+                style={{
+                  ...styles.input,
+                  marginBottom: 16,
+                  borderColor: isLoginFocused ? "#FF6C00" : "#E8E8E8",
+                  backgroundColor: isLoginFocused ? "#FFFFFF" : "#F6F6F6",
+                }}
+                placeholder="Логін"
+                placeholderTextColor="#BDBDBD"
+                cursorColor={"#BDBDBD"}
+                value={registerData.login}
+                onFocus={handleLoginFocus}
+                onBlur={() => {
+                  setIsLoginFocused(false);
+                }}
+                onChangeText={(value) => {
+                  setRegisterData((prevState) => ({
+                    ...prevState,
+                    login: value,
+                  }));
+                }}
+              ></TextInput>
               <TextInput
                 style={{
                   ...styles.input,
@@ -80,17 +108,17 @@ const LoginScreen = () => {
                 placeholder="Адреса електронної пошти"
                 placeholderTextColor="#BDBDBD"
                 cursorColor={"#BDBDBD"}
-                value={loginData.email}
+                value={registerData.email}
                 onFocus={handleEmailFocus}
                 onBlur={() => {
                   setIsEmailFocused(false);
                 }}
                 onChangeText={(value) => {
-                    setLoginData((prevState) => ({
-                      ...prevState,
-                      email: value,
-                    }));
-                  }}
+                  setRegisterData((prevState) => ({
+                    ...prevState,
+                    email: value,
+                  }));
+                }}
               ></TextInput>
               <View>
                 <TextInput
@@ -107,20 +135,26 @@ const LoginScreen = () => {
                   secureTextEntry={isPasswordShown ? false : true}
                   placeholderTextColor="#BDBDBD"
                   cursorColor={"#BDBDBD"}
-                  value={loginData.password}
+                  value={registerData.password}
                   onFocus={handlePasswordFocus}
                   onBlur={() => {
                     setIsPasswordFocused(false);
                   }}
                   onChangeText={(value) => {
-                    setLoginData((prevState) => ({
+                    setRegisterData((prevState) => ({
                       ...prevState,
                       password: value,
                     }));
                   }}
                 ></TextInput>
-                <TouchableOpacity style={styles.inputBtn} activeOpacity={0.7} onPress={() => setIsPasswordShown(!isPasswordShown)}>
-                  <Text style={styles.inputBtnTitle}>{isPasswordShown ? "Сховати" : "Показати"}</Text>
+                <TouchableOpacity
+                  style={styles.inputBtn}
+                  activeOpacity={0.7}
+                  onPress={() => setIsPasswordShown(!isPasswordShown)}
+                >
+                  <Text style={styles.inputBtnTitle}>
+                    {isPasswordShown ? "Сховати" : "Показати"}
+                  </Text>
                 </TouchableOpacity>
               </View>
               <TouchableOpacity
@@ -128,14 +162,13 @@ const LoginScreen = () => {
                 activeOpacity={0.7}
                 onPress={handleSubmit}
               >
-                <Text style={styles.btnTitle}>Увійти</Text>
+                <Text style={styles.btnTitle}>Зареєструватися</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={{ flex: 1, flexDirection: "row", gap: 5 }}
                 activeOpacity={0.7}
+                onPress={() => navigation.navigate("Login")}
               >
-                <Text style={styles.linkTitle}>Немає акаунту?</Text>
-                <Text style={styles.underlineLinkTitle}>Зареєструватися</Text>
+                <Text style={styles.linkTitle}>Вже є акаунт? Увійти</Text>
               </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>
@@ -159,14 +192,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
   },
+  image: {
+    width: 132,
+    height: 120,
+    position: "absolute",
+    left: 132,
+    top: -60,
+  },
   form: {
     width: "auto",
-    height: 489,
+    height: 549,
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
     backgroundColor: "#FFFFFF",
+    position: "relative",
     alignItems: "center",
   },
   title: {
@@ -174,13 +215,15 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Medium",
     fontSize: 30,
     letterSpacing: 0.3,
-    marginTop: 32,
+    marginTop: 92,
     marginBottom: 33,
   },
   input: {
     width: 343,
     height: 50,
     borderWidth: 1,
+    backgroundColor: "#F6F6F6",
+    borderColor: "#E8E8E8",
     borderRadius: 8,
     padding: 16,
     color: "#212121",
@@ -217,12 +260,6 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Regular",
     fontSize: 16,
   },
-  underlineLinkTitle: {
-    color: "#1B4371",
-    fontFamily: "Roboto-Regular",
-    fontSize: 16,
-    textDecorationLine: "underline",
-  },
 });
 
-export default LoginScreen;
+export default RegistrationScreen;
