@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
   StyleSheet,
@@ -12,6 +12,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
+import { useKeyboardVisible } from "../../hooks/useKeyboardVisible";
 
 const initialState = {
   email: "",
@@ -19,17 +20,13 @@ const initialState = {
 };
 
 const LoginScreen = () => {
-  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [isPasswordShown, setIsPasswordShown] = useState(false);
   const [loginData, setLoginData] = useState(initialState);
   const navigation = useNavigation();
 
-  const keyboardHide = () => {
-    Keyboard.dismiss();
-    setIsShowKeyboard(false);
-  };
+  const isKeyboardVisible = useKeyboardVisible();
 
   const handleSubmit = () => {
     console.log(loginData);
@@ -37,21 +34,11 @@ const LoginScreen = () => {
     navigation.navigate("Home");
   };
 
-  const handleEmailFocus = () => {
-    setIsShowKeyboard(true);
-    setIsEmailFocused(true);
-  };
-
-  const handlePasswordFocus = () => {
-    setIsShowKeyboard(true);
-    setIsPasswordFocused(true);
-  };
-
   return (
-    <TouchableWithoutFeedback onPress={keyboardHide}>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
         <ImageBackground
-          source={require("../../assets/images/photoBG.jpg")}
+          source={require("../../../assets/images/photoBG.jpg")}
           style={styles.imageBG}
           resizeMode="cover"
         >
@@ -60,7 +47,10 @@ const LoginScreen = () => {
             style={styles.avoidContainer}
           >
             <View
-              style={{ ...styles.form, marginBottom: isShowKeyboard ? 50 : 0 }}
+              style={{
+                ...styles.form,
+                marginBottom: isKeyboardVisible ? 50 : 0,
+              }}
             >
               <Text style={styles.title}>Увійти</Text>
               <TextInput
@@ -75,7 +65,7 @@ const LoginScreen = () => {
                 placeholderTextColor="#BDBDBD"
                 cursorColor={"#BDBDBD"}
                 value={loginData.email}
-                onFocus={handleEmailFocus}
+                onFocus={() => setIsEmailFocused(true)}
                 onBlur={() => {
                   setIsEmailFocused(false);
                 }}
@@ -102,7 +92,7 @@ const LoginScreen = () => {
                   placeholderTextColor="#BDBDBD"
                   cursorColor={"#BDBDBD"}
                   value={loginData.password}
-                  onFocus={handlePasswordFocus}
+                  onFocus={() => setIsPasswordFocused(true)}
                   onBlur={() => {
                     setIsPasswordFocused(false);
                   }}

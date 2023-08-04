@@ -13,6 +13,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
+import { useKeyboardVisible } from "../../hooks/useKeyboardVisible";
 
 const initialState = {
   login: "",
@@ -21,7 +22,6 @@ const initialState = {
 };
 
 const RegistrationScreen = () => {
-  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isLoginFocused, setIsLoginFocused] = useState(false);
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
@@ -29,10 +29,7 @@ const RegistrationScreen = () => {
   const [registerData, setRegisterData] = useState(initialState);
   const navigation = useNavigation();
 
-  const keyboardHide = () => {
-    Keyboard.dismiss();
-    setIsShowKeyboard(false);
-  };
+  const isKeyboardVisible = useKeyboardVisible();
 
   const handleSubmit = () => {
     console.log(registerData);
@@ -40,26 +37,11 @@ const RegistrationScreen = () => {
     navigation.navigate("Home");
   };
 
-  const handleLoginFocus = () => {
-    setIsShowKeyboard(true);
-    setIsLoginFocused(true);
-  };
-
-  const handleEmailFocus = () => {
-    setIsShowKeyboard(true);
-    setIsEmailFocused(true);
-  };
-
-  const handlePasswordFocus = () => {
-    setIsShowKeyboard(true);
-    setIsPasswordFocused(true);
-  };
-
   return (
-    <TouchableWithoutFeedback onPress={keyboardHide}>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
         <ImageBackground
-          source={require("../../assets/images/photoBG.jpg")}
+          source={require("../../../assets/images/photoBG.jpg")}
           style={styles.imageBG}
           resizeMode="cover"
         >
@@ -68,10 +50,13 @@ const RegistrationScreen = () => {
             style={styles.avoidContainer}
           >
             <View
-              style={{ ...styles.form, marginBottom: isShowKeyboard ? 116 : 0 }}
+              style={{
+                ...styles.form,
+                marginBottom: isKeyboardVisible ? 116 : 0,
+              }}
             >
               <Image
-                source={require("../../assets/images/addPhoto.png")}
+                source={require("../../../assets/images/addPhoto.png")}
                 style={styles.image}
               />
               <Text style={styles.title}>Реєстрація</Text>
@@ -86,7 +71,7 @@ const RegistrationScreen = () => {
                 placeholderTextColor="#BDBDBD"
                 cursorColor={"#BDBDBD"}
                 value={registerData.login}
-                onFocus={handleLoginFocus}
+                onFocus={() => setIsLoginFocused(true)}
                 onBlur={() => {
                   setIsLoginFocused(false);
                 }}
@@ -109,7 +94,7 @@ const RegistrationScreen = () => {
                 placeholderTextColor="#BDBDBD"
                 cursorColor={"#BDBDBD"}
                 value={registerData.email}
-                onFocus={handleEmailFocus}
+                onFocus={() => setIsEmailFocused(true)}
                 onBlur={() => {
                   setIsEmailFocused(false);
                 }}
@@ -136,7 +121,7 @@ const RegistrationScreen = () => {
                   placeholderTextColor="#BDBDBD"
                   cursorColor={"#BDBDBD"}
                   value={registerData.password}
-                  onFocus={handlePasswordFocus}
+                  onFocus={() => setIsPasswordFocused(true)}
                   onBlur={() => {
                     setIsPasswordFocused(false);
                   }}

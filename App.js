@@ -4,9 +4,9 @@ import { Text, View, StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import LoginScreen from "./src/screens/LoginScreen";
-import RegistrationScreen from "./src/screens/RegistrationScreen";
-import Home from "./src/screens/Home";
+import LoginScreen from "./src/screens/authScreens/LoginScreen";
+import RegistrationScreen from "./src/screens/authScreens/RegistrationScreen";
+import Home from "./src/screens/mainScreens/Home";
 
 import { useFonts } from "expo-font";
 

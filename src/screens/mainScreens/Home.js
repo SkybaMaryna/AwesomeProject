@@ -44,6 +44,8 @@ const Home = () => {
           headerTitleAlign: "center",
           headerStyle: {
             height: 88,
+            borderBottomColor: "rgba(0, 0, 0, 0.30)",
+            borderBottomWidth: 1,
           },
           headerTitleStyle: {
             color: "#212121",
@@ -58,7 +60,7 @@ const Home = () => {
           ),
           headerRightContainerStyle: {
             paddingRight: 16,
-          }
+          },
         }}
       />
       <MainTab.Screen
@@ -79,6 +81,8 @@ const Home = () => {
           headerTitleAlign: "center",
           headerStyle: {
             height: 88,
+            borderBottomColor: "rgba(0, 0, 0, 0.30)",
+            borderBottomWidth: 1,
           },
           headerTitleStyle: {
             color: "#212121",
