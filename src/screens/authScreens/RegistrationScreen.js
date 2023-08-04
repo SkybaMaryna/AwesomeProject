@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
 import {
   StyleSheet,
   Text,
@@ -27,14 +26,12 @@ const RegistrationScreen = () => {
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [isPasswordShown, setIsPasswordShown] = useState(false);
   const [registerData, setRegisterData] = useState(initialState);
-  const navigation = useNavigation();
 
   const isKeyboardVisible = useKeyboardVisible();
 
   const handleSubmit = () => {
     console.log(registerData);
     setRegisterData(initialState);
-    navigation.navigate("Home");
   };
 
   return (

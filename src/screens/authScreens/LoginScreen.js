@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -24,14 +23,12 @@ const LoginScreen = () => {
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [isPasswordShown, setIsPasswordShown] = useState(false);
   const [loginData, setLoginData] = useState(initialState);
-  const navigation = useNavigation();
 
   const isKeyboardVisible = useKeyboardVisible();
 
   const handleSubmit = () => {
     console.log(loginData);
     setLoginData(initialState);
-    navigation.navigate("Home");
   };
 
   return (

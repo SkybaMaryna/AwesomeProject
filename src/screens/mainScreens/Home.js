@@ -39,27 +39,6 @@ const Home = () => {
             top: 17,
             flexGrow: 2,
           },
-          // headerTitle: "Публікації",
-          // headerTitleAlign: "center",
-          // headerStyle: {
-          //   height: 88,
-          //   borderBottomColor: "rgba(0, 0, 0, 0.30)",
-          //   borderBottomWidth: 1,
-          // },
-          // headerTitleStyle: {
-          //   color: "#212121",
-          //   fontFamily: "Roboto-Medium",
-          //   fontSize: 17,
-          //   marginRight: -16,
-          // },
-          // headerRight: () => (
-          //   <TouchableOpacity onPress={handleLogout}>
-          //     <Feather name="log-out" size={24} color="#BDBDBD" />
-          //   </TouchableOpacity>
-          // ),
-          // headerRightContainerStyle: {
-          //   paddingRight: 16,
-          // },
         }}
       />
       <MainTab.Screen
@@ -88,6 +67,9 @@ const Home = () => {
             fontFamily: "Roboto-Medium",
             fontSize: 17,
           },
+          tabBarStyle: {
+            display: 'none'
+          }
         }}
       />
       <MainTab.Screen
