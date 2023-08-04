@@ -1,6 +1,5 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { TouchableOpacity } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 
 import CreatePostsScreen from "./CreatePostsScreen";
@@ -10,7 +9,6 @@ import PostsScreen from "./PostsScreen";
 const MainTab = createBottomTabNavigator();
 
 const Home = () => {
-  const handleLogout = () => {};
   return (
     <MainTab.Navigator
       screenOptions={{
@@ -34,33 +32,34 @@ const Home = () => {
               color={focused ? "#FF6C00" : "#212121"}
             />
           ),
+          headerShown: false,
           tabBarItemStyle: {
             width: 24,
             height: 24,
             top: 17,
             flexGrow: 2,
           },
-          headerTitle: "Публікації",
-          headerTitleAlign: "center",
-          headerStyle: {
-            height: 88,
-            borderBottomColor: "rgba(0, 0, 0, 0.30)",
-            borderBottomWidth: 1,
-          },
-          headerTitleStyle: {
-            color: "#212121",
-            fontFamily: "Roboto-Medium",
-            fontSize: 17,
-            marginRight: -16,
-          },
-          headerRight: () => (
-            <TouchableOpacity onPress={handleLogout}>
-              <Feather name="log-out" size={24} color="#BDBDBD" />
-            </TouchableOpacity>
-          ),
-          headerRightContainerStyle: {
-            paddingRight: 16,
-          },
+          // headerTitle: "Публікації",
+          // headerTitleAlign: "center",
+          // headerStyle: {
+          //   height: 88,
+          //   borderBottomColor: "rgba(0, 0, 0, 0.30)",
+          //   borderBottomWidth: 1,
+          // },
+          // headerTitleStyle: {
+          //   color: "#212121",
+          //   fontFamily: "Roboto-Medium",
+          //   fontSize: 17,
+          //   marginRight: -16,
+          // },
+          // headerRight: () => (
+          //   <TouchableOpacity onPress={handleLogout}>
+          //     <Feather name="log-out" size={24} color="#BDBDBD" />
+          //   </TouchableOpacity>
+          // ),
+          // headerRightContainerStyle: {
+          //   paddingRight: 16,
+          // },
         }}
       />
       <MainTab.Screen
