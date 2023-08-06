@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import {
   View,
   Text,
@@ -13,6 +14,9 @@ import { Camera } from "expo-camera";
 import { FontAwesome5, Feather } from "@expo/vector-icons";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
+import { collection, addDoc } from "firebase/firestore";
+import { db, storage } from "../../../firebase/config";
+import { ref, uploadBytes } from "firebase/storage";
 
 const initialState = {
   photo: null,
@@ -28,6 +32,7 @@ const CreatePostsScreen = ({ navigation }) => {
   const [isLocalityFocused, setIsLocalityFocused] = useState(false);
   const { photo, title, locality } = postData;
   const isDataFullfield = photo && title && locality ? true : false;
+  const { userId, login } = useSelector((state) => state.auth);
 
   useEffect(() => {
     (async () => {
@@ -60,8 +65,8 @@ const CreatePostsScreen = ({ navigation }) => {
   }
 
   const takePhoto = async () => {
-    const photo = await camera.takePictureAsync();
-    setPostData((prevState) => ({ ...prevState, photo: photo.uri }));
+    const { uri } = await camera.takePictureAsync();
+    setPostData((prevState) => ({ ...prevState, photo: uri }));
   };
 
   const onChangePhoto = () => {
@@ -69,14 +74,43 @@ const CreatePostsScreen = ({ navigation }) => {
   };
 
   const makePost = async () => {
+    // const location = await Location.getCurrentPositionAsync({});
+    // const coords = {
+    //   latitude: location.coords.latitude,
+    //   longitude: location.coords.longitude,
+    // };
+    await uploadPostToServer();
+    navigation.navigate("DefaultScreen");
+    setPostData(initialState);
+  };
+
+  // {{ postData, coords }}
+
+  const uploadPostToServer = async () => {
+    // const photo = await uploadPhotoToServer();
     const location = await Location.getCurrentPositionAsync({});
     const coords = {
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
     };
-    navigation.navigate("DefaultScreen", { postData, coords });
-    setPostData(initialState);
+    const createPost = await addDoc(collection(db, "posts"), {
+      // photo,
+      title,
+      locality,
+      coords,
+      userId,
+      login,
+    });
   };
+
+  // const uploadPhotoToServer = async () => {
+  //   const response = await fetch(photo);
+  //   const file = photo.response.blob();
+  //   const uniquePostId = Date.now().toString();
+  //   const storageRef = ref(storage, `postImage/${uniquePostId}`);
+  //   await uploadBytes(storageRef, file);
+  //   console.log("Uploaded a blob or file!");
+  // };
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>

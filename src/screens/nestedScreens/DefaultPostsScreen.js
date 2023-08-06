@@ -1,34 +1,40 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, FlatList, Image } from "react-native";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../../firebase/config";
 
 import Post from "../../components/Post";
 
-const DefaultPostsScreen = ({ route, navigation }) => {
+const DefaultPostsScreen = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
-
+  
   useEffect(() => {
-    if (route.params) {
-      setPosts((prevState) => [...prevState, route.params]);
+    getAllPost();
+  }, []);
+
+  const getAllPost = async () => {
+    try {
+      const snapshot = await getDocs(collection(db, "posts"));
+      // snapshot.forEach((doc) => console.log(`${doc.id} =>`, doc.data()));
+      setPosts(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    } catch (error) {
+      console.log(error.message);
     }
-  }, [route.params]);
+  };
 
   return (
     <View style={styles.container}>
       <FlatList
         data={posts}
-        keyExtractor={(item, indx) => indx.toString()}
-        renderItem={({
-          item: {
-            coords,
-            postData: { photo, title, locality },
-          },
-        }) => (
+        keyExtractor={(item) => item.id}
+        renderItem={({ item: { coords, photo, title, locality, id } }) => (
           <Post
-            photo={photo}
+            // photo={photo}
             title={title}
             locality={locality}
             coords={coords}
             navigation={navigation}
+            postId={id}
           />
         )}
       />

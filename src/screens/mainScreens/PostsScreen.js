@@ -5,11 +5,18 @@ import MapScreen from "../nestedScreens/MapScreen";
 import CommentsScreen from "../nestedScreens/CommentsScreen";
 import { TouchableOpacity } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
+import { useDispatch } from "react-redux";
+import { authSignOutUser } from "../../../redux/auth/authOperations";
 
 const NestedScreen = createStackNavigator();
 
 const PostsScreen = () => {
-  const handleLogout = () => {};
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(authSignOutUser());
+  };
+
   return (
     <NestedScreen.Navigator>
       <NestedScreen.Screen

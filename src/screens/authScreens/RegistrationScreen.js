@@ -12,7 +12,9 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
+import { useDispatch } from "react-redux";
 import { useKeyboardVisible } from "../../hooks/useKeyboardVisible";
+import { authSignUpUser } from "../../../redux/auth/authOperations";
 
 const initialState = {
   login: "",
@@ -20,7 +22,7 @@ const initialState = {
   password: "",
 };
 
-const RegistrationScreen = () => {
+const RegistrationScreen = ({navigation}) => {
   const [isLoginFocused, setIsLoginFocused] = useState(false);
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
@@ -29,8 +31,10 @@ const RegistrationScreen = () => {
 
   const isKeyboardVisible = useKeyboardVisible();
 
+  const dispatch = useDispatch();
+
   const handleSubmit = () => {
-    console.log(registerData);
+    dispatch(authSignUpUser(registerData));
     setRegisterData(initialState);
   };
 

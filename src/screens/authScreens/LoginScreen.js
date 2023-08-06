@@ -11,14 +11,16 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
+import { useDispatch } from "react-redux";
 import { useKeyboardVisible } from "../../hooks/useKeyboardVisible";
+import { authSignInUser } from "../../../redux/auth/authOperations";
 
 const initialState = {
   email: "",
   password: "",
 };
 
-const LoginScreen = () => {
+const LoginScreen = ({navigation}) => {
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [isPasswordShown, setIsPasswordShown] = useState(false);
@@ -26,8 +28,10 @@ const LoginScreen = () => {
 
   const isKeyboardVisible = useKeyboardVisible();
 
+  const dispatch = useDispatch();
+
   const handleSubmit = () => {
-    console.log(loginData);
+    dispatch(authSignInUser(loginData));
     setLoginData(initialState);
   };
 

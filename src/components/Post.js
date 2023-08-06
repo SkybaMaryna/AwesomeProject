@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
-const Post = ({ photo, title, locality, coords, navigation }) => {
+const Post = ({ photo, title, locality, coords, navigation, postId }) => {
   return (
     <View
       style={{
@@ -17,7 +17,7 @@ const Post = ({ photo, title, locality, coords, navigation }) => {
             name="message-circle"
             size={24}
             color="#BDBDBD"
-            onPress={() => navigation.navigate("Comments")}
+            onPress={() => navigation.navigate("Comments", {postId, photo})}
           />
 
           <Text style={styles.count}>0</Text>
