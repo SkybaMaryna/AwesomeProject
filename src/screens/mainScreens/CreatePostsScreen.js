@@ -11,12 +11,12 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { Camera } from "expo-camera";
+import * as Location from "expo-location";
 import { FontAwesome5, Feather } from "@expo/vector-icons";
 import * as MediaLibrary from "expo-media-library";
-import * as Location from "expo-location";
 import { collection, addDoc } from "firebase/firestore";
-import { db, storage } from "../../../firebase/config";
 import { ref, uploadBytes } from "firebase/storage";
+import { db, storage } from "../../../firebase/config";
 
 const initialState = {
   photo: null,
@@ -74,20 +74,13 @@ const CreatePostsScreen = ({ navigation }) => {
   };
 
   const makePost = async () => {
-    // const location = await Location.getCurrentPositionAsync({});
-    // const coords = {
-    //   latitude: location.coords.latitude,
-    //   longitude: location.coords.longitude,
-    // };
     await uploadPostToServer();
     navigation.navigate("DefaultScreen");
     setPostData(initialState);
   };
 
-  // {{ postData, coords }}
-
   const uploadPostToServer = async () => {
-    // const photo = await uploadPhotoToServer();
+    const photo = await uploadPhotoToServer();
     const location = await Location.getCurrentPositionAsync({});
     const coords = {
       latitude: location.coords.latitude,
@@ -103,14 +96,14 @@ const CreatePostsScreen = ({ navigation }) => {
     });
   };
 
-  // const uploadPhotoToServer = async () => {
-  //   const response = await fetch(photo);
-  //   const file = photo.response.blob();
-  //   const uniquePostId = Date.now().toString();
-  //   const storageRef = ref(storage, `postImage/${uniquePostId}`);
-  //   await uploadBytes(storageRef, file);
-  //   console.log("Uploaded a blob or file!");
-  // };
+  const uploadPhotoToServer = async () => {
+    const response = await fetch(photo);
+    const file = photo.response.blob();
+    const uniquePostId = Date.now().toString();
+    const storageRef = ref(storage, `postImage/${uniquePostId}`);
+    await uploadBytes(storageRef, file);
+    console.log("Uploaded a blob or file!");
+  };
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>

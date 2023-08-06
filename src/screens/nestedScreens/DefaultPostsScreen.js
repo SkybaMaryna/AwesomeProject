@@ -7,7 +7,7 @@ import Post from "../../components/Post";
 
 const DefaultPostsScreen = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
-  
+
   useEffect(() => {
     getAllPost();
   }, []);
@@ -15,7 +15,6 @@ const DefaultPostsScreen = ({ navigation }) => {
   const getAllPost = async () => {
     try {
       const snapshot = await getDocs(collection(db, "posts"));
-      // snapshot.forEach((doc) => console.log(`${doc.id} =>`, doc.data()));
       setPosts(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     } catch (error) {
       console.log(error.message);

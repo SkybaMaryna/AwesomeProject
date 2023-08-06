@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import React from "react";
+import { View, StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
 const MapScreen = ({ route }) => {
@@ -13,7 +13,7 @@ const MapScreen = ({ route }) => {
           longitudeDelta: 0.0421,
         }}
       >
-        <Marker coordinate={{ ...route.params.coords }}  />
+        <Marker coordinate={{ ...route.params.coords }} />
       </MapView>
     </View>
   );
