@@ -10,13 +10,14 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Feather from "@expo/vector-icons/Feather";
+import { AntDesign } from "@expo/vector-icons";
 import Post from "../../components/Post";
 import { authSignOutUser } from "../../../redux/auth/authOperations";
 import { getPostsById } from "../../services/database";
 
 const ProfileScreen = ({ navigation }) => {
   const [userPosts, setUserPosts] = useState([]);
-  const { userId, login } = useSelector((state) => state.auth);
+  const { userId, login, avatar } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -43,10 +44,25 @@ const ProfileScreen = ({ navigation }) => {
           <TouchableOpacity onPress={handleLogout} style={styles.logoutBtn}>
             <Feather name="log-out" size={24} color="#BDBDBD" />
           </TouchableOpacity>
-          <Image
-            source={require("../../../assets/images/addPhoto.png")}
-            style={styles.image}
-          />
+          {avatar ? (
+            <View style={styles.avatarContainer}>
+              <Image source={{ uri: avatar }} style={styles.avatar} />
+              <TouchableOpacity style={styles.delBtn} activeOpacity={0.7}>
+                <AntDesign
+                  name="closecircleo"
+                  size={25}
+                  color="#BDBDBD"
+                  style={styles.delIcon}
+                  onPress={() => setAvatarURI("")}
+                />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <Image
+              source={require("../../../assets/images/addPhoto.png")}
+              style={styles.image}
+            />
+          )}
           <Text style={styles.userName}>{login}</Text>
           <View style={styles.commentsContainer}>
             <FlatList
@@ -73,9 +89,31 @@ const ProfileScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  avatarContainer: {
+    position: "absolute",
+    width: 120,
+    height: 120,
+    left: 128,
+    top: -60,
+    borderRadius: 16,
+  },
+  avatar: {
+    width: 120,
+    height: 120,
+    borderRadius: 16,
+  },
   container: {
     flex: 1,
     justifyContent: "center",
+  },
+  delBtn: {
+    position: "absolute",
+    top: 80,
+    right: -12,
+    width: 25,
+    height: 25,
+    justifyContent: "center",
+    alignItems: "center",
   },
   imageBG: {
     flex: 1,

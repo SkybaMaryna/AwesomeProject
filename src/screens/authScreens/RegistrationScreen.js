@@ -19,6 +19,8 @@ import { AntDesign } from "@expo/vector-icons";
 import { useKeyboardVisible } from "../../hooks/useKeyboardVisible";
 import { authSignUpUser } from "../../../redux/auth/authOperations";
 import { selectAvatar } from "../../helpers/selectAvatar";
+import { uploadAvatarToServer } from "../../services/database";
+import { uriToBlob } from "../../helpers/uriToBlob";
 
 const initialState = {
   login: "",
@@ -38,14 +40,21 @@ const RegistrationScreen = ({ navigation }) => {
 
   const dispatch = useDispatch();
 
-  const handleSubmit = () => {
-    dispatch(authSignUpUser(registerData));
+  const handleSubmit = async () => {
+    const avatarURL = await uploadAvatar();
+    dispatch(authSignUpUser({ ...registerData, avatarURL }));
     setRegisterData(initialState);
+    setAvatarURI("");
   };
 
   const addAvatar = async () => {
     const result = await selectAvatar();
     setAvatarURI(result.assets[0].uri);
+  };
+
+  const uploadAvatar = async () => {
+    const file = await uriToBlob(avatarURI);
+    return await uploadAvatarToServer(file);
   };
 
   return (

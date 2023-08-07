@@ -22,6 +22,18 @@ export const uploadPhotoToServer = async (file) => {
   }
 };
 
+export const uploadAvatarToServer = async (file) => {
+  try {
+    const uniqueAvatarId = Date.now().toString();
+    const storageRef = ref(storage, `avatars/${uniqueAvatarId}`);
+    await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(storageRef);
+    return url;
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
 export const addPostToServer = async (
   photo,
   title,
