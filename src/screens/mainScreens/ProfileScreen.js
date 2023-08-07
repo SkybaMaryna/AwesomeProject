@@ -53,7 +53,6 @@ const ProfileScreen = ({ navigation }) => {
                   size={25}
                   color="#BDBDBD"
                   style={styles.delIcon}
-                  onPress={() => setAvatarURI("")}
                 />
               </TouchableOpacity>
             </View>
