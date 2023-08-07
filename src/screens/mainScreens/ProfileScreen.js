@@ -8,20 +8,11 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import {
-  doc,
-  addDoc,
-  collection,
-  getDocs,
-  serverTimestamp,
-  where,
-  query,
-} from "firebase/firestore";
 import { useDispatch, useSelector } from "react-redux";
 import Feather from "@expo/vector-icons/Feather";
-import { db } from "../../../firebase/config";
 import Post from "../../components/Post";
 import { authSignOutUser } from "../../../redux/auth/authOperations";
+import { getPostsById } from "../../services/database";
 
 const ProfileScreen = ({ navigation }) => {
   const [userPosts, setUserPosts] = useState([]);
@@ -29,17 +20,12 @@ const ProfileScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getUserPosts();
+    getUserPosts(userId);
   }, []);
 
-  const getUserPosts = async () => {
-    try {
-      const q = query(collection(db, "posts"), where("userId", "==", userId));
-      const snapshot = await getDocs(q);
-      setUserPosts(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    } catch (error) {
-      console.log(error.message);
-    }
+  const getUserPosts = async (userId) => {
+    const snapshot = await getPostsById(userId);
+    setUserPosts(snapshot?.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   };
 
   const handleLogout = () => {
@@ -67,10 +53,10 @@ const ProfileScreen = ({ navigation }) => {
               data={userPosts}
               keyExtractor={(item) => item.id}
               renderItem={({
-                item: { coords, photo, title, locality, id, navigation },
+                item: { coords, photo, title, locality, id },
               }) => (
                 <Post
-                  // photo={photo}
+                  photo={photo}
                   title={title}
                   locality={locality}
                   coords={coords}
@@ -124,10 +110,11 @@ const styles = StyleSheet.create({
   },
   userName: {
     marginTop: 92,
-    color: '#212121',
+    color: "#212121",
     fontFamily: "Roboto-Medium",
     fontSize: 30,
-  }
+    marginBottom: 33,
+  },
 });
 
 export default ProfileScreen;

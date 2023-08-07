@@ -7,19 +7,11 @@ import {
   TextInput,
   TouchableOpacity,
   FlatList,
-  KeyboardAvoidingView,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import {
-  doc,
-  addDoc,
-  collection,
-  getDocs,
-  serverTimestamp,
-} from "firebase/firestore";
 import { useSelector } from "react-redux";
-import { db } from "../../../firebase/config";
 import { formatDate } from "../../helpers/formatDate";
+import { addCommentToServer, getComments } from "../../services/database";
 
 const CommentsScreen = ({ route }) => {
   const { postId, photo } = route.params;
@@ -29,19 +21,12 @@ const CommentsScreen = ({ route }) => {
   const [contentSize, setContentSize] = useState({ height: 50 });
 
   useEffect(() => {
-    getAllComments();
+    getAllComments(postId);
   }, []);
 
-  const getAllComments = async () => {
-    try {
-      const refPost = doc(db, "posts", postId);
-      const snapshot = await getDocs(collection(refPost, "comments"));
-      setAllComments(
-        snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
-      );
-    } catch (error) {
-      console.log(error.message);
-    }
+  const getAllComments = async (postId) => {
+    const snapshot = await getComments(postId);
+    setAllComments(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   };
 
   const handleContentSizeChange = (e) => {
@@ -49,18 +34,8 @@ const CommentsScreen = ({ route }) => {
   };
 
   const addComment = async () => {
-    try {
-      const ref = doc(db, "posts", postId);
-      await addDoc(collection(ref, "comments"), {
-        comment,
-        login,
-        createdAt: serverTimestamp(),
-      });
-      setComment("");
-      console.log("document updated");
-    } catch (error) {
-      console.log(error);
-    }
+    await addCommentToServer(comment, login, postId);
+    setComment("");
   };
 
   return (

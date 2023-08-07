@@ -9,7 +9,7 @@ const Post = ({ photo, title, locality, coords, navigation, postId }) => {
         marginBottom: 32,
       }}
     >
-      <Image source={{ uri: photo }} style={styles.image} />
+      <Image source={{uri: photo}} style={styles.image} />
       <Text style={styles.title}>{title}</Text>
       <View style={styles.infoContainer}>
         <View style={styles.countContainer}>
@@ -17,7 +17,7 @@ const Post = ({ photo, title, locality, coords, navigation, postId }) => {
             name="message-circle"
             size={24}
             color="#BDBDBD"
-            onPress={() => navigation.navigate("Comments", {postId, photo})}
+            onPress={() => navigation.navigate("Comments", { postId, photo })}
           />
 
           <Text style={styles.count}>0</Text>

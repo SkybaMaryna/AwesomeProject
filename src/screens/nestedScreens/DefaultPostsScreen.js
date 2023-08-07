@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, FlatList, Image } from "react-native";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../../firebase/config";
-
 import Post from "../../components/Post";
+import { getPosts } from "../../services/database";
 
 const DefaultPostsScreen = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
@@ -13,12 +11,8 @@ const DefaultPostsScreen = ({ navigation }) => {
   }, []);
 
   const getAllPost = async () => {
-    try {
-      const snapshot = await getDocs(collection(db, "posts"));
-      setPosts(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    } catch (error) {
-      console.log(error.message);
-    }
+    const snapshot = await getPosts();
+    setPosts(snapshot?.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   };
 
   return (
@@ -28,7 +22,7 @@ const DefaultPostsScreen = ({ navigation }) => {
         keyExtractor={(item) => item.id}
         renderItem={({ item: { coords, photo, title, locality, id } }) => (
           <Post
-            // photo={photo}
+            photo={photo}
             title={title}
             locality={locality}
             coords={coords}
