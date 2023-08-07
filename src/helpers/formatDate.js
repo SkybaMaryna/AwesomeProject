@@ -19,7 +19,7 @@ const getMonthName = (monthNumber) => {
 
 export const formatDate = (timestamp) => {
  
-  const date = new Date(timestamp.seconds);
+  const date = new Date(timestamp.seconds*1000);
   const day = date.getDate();
   const month = date.getMonth();
   const year = date.getFullYear();
