@@ -34,14 +34,16 @@ const CommentsScreen = ({ route }) => {
   };
 
   const addComment = async () => {
-    await addCommentToServer(comment, login, postId);
-    setComment("");
+    if (comment) {
+      await addCommentToServer(comment, login, postId);
+      setComment("");
+      Keyboard.dismiss();
+    }
   };
 
   return (
     <View style={styles.container}>
       <Image source={{ uri: photo }} style={styles.image} />
-
       <View style={styles.commentsContainer}>
         <FlatList
           data={allComments}
@@ -89,7 +91,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "flex-end",
+  },
+  commentsContainer: {
+    height: 300,
   },
   commentContainer: {
     flexDirection: "row",
@@ -111,8 +115,8 @@ const styles = StyleSheet.create({
   image: {
     width: 343,
     height: 240,
-    borderRadius: 32,
-    marginBottom: 32,
+    borderRadius: 8,
+    marginVertical: 32,
   },
   input: {
     width: 343,
