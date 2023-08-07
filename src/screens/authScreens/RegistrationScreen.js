@@ -11,10 +11,14 @@ import {
   Platform,
   Keyboard,
   TouchableWithoutFeedback,
+  Button,
 } from "react-native";
 import { useDispatch } from "react-redux";
+import { EvilIcons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { useKeyboardVisible } from "../../hooks/useKeyboardVisible";
 import { authSignUpUser } from "../../../redux/auth/authOperations";
+import { selectAvatar } from "../../helpers/selectAvatar";
 
 const initialState = {
   login: "",
@@ -22,12 +26,13 @@ const initialState = {
   password: "",
 };
 
-const RegistrationScreen = ({navigation}) => {
+const RegistrationScreen = ({ navigation }) => {
   const [isLoginFocused, setIsLoginFocused] = useState(false);
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [isPasswordShown, setIsPasswordShown] = useState(false);
   const [registerData, setRegisterData] = useState(initialState);
+  const [avatarURI, setAvatarURI] = useState("");
 
   const isKeyboardVisible = useKeyboardVisible();
 
@@ -36,6 +41,11 @@ const RegistrationScreen = ({navigation}) => {
   const handleSubmit = () => {
     dispatch(authSignUpUser(registerData));
     setRegisterData(initialState);
+  };
+
+  const addAvatar = async () => {
+    const result = await selectAvatar();
+    setAvatarURI(result.assets[0].uri);
   };
 
   return (
@@ -56,10 +66,37 @@ const RegistrationScreen = ({navigation}) => {
                 marginBottom: isKeyboardVisible ? 116 : 0,
               }}
             >
-              <Image
-                source={require("../../../assets/images/addPhoto.png")}
-                style={styles.image}
-              />
+              {avatarURI && (
+                <View style={styles.avatarContainer}>
+                  <Image source={{ uri: avatarURI }} style={styles.avatar} />
+                  <TouchableOpacity style={styles.delBtn} activeOpacity={0.7}>
+                    <AntDesign
+                      name="closecircleo"
+                      size={25}
+                      color="#BDBDBD"
+                      style={styles.delIcon}
+                      onPress={() => setAvatarURI("")}
+                    />
+                  </TouchableOpacity>
+                </View>
+              )}
+
+              {!avatarURI && (
+                <View style={styles.default}>
+                  <TouchableOpacity
+                    style={styles.addBtn}
+                    activeOpacity={0.7}
+                    onPress={addAvatar}
+                  >
+                    <EvilIcons
+                      name="plus"
+                      size={25}
+                      color="#FF6C00"
+                      style={styles.addIcon}
+                    />
+                  </TouchableOpacity>
+                </View>
+              )}
               <Text style={styles.title}>Реєстрація</Text>
               <TextInput
                 style={{
@@ -165,25 +202,74 @@ const RegistrationScreen = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  addIcon: {
     flex: 1,
     justifyContent: "center",
+    alignItems: "center",
   },
-  imageBG: {
-    flex: 1,
-    justifyContent: "flex-end",
-    alignItems: "stretch",
+
+  addBtn: {
+    position: "absolute",
+    top: 80,
+    right: -12,
+    width: 25,
+    height: 25,
+    justifyContent: "center",
+    alignItems: "center",
   },
   avoidContainer: {
     flex: 1,
     justifyContent: "flex-end",
   },
-  image: {
-    width: 132,
+  avatarContainer: {
+    position: "absolute",
+    width: 120,
+    height: 120,
+    left: 128,
+    top: -60,
+    borderRadius: 16,
+  },
+  avatar: {
+    width: 120,
+    height: 120,
+    borderRadius: 16,
+  },
+  btn: {
+    backgroundColor: "#FF6C00",
+    borderRadius: 100,
+    width: 343,
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  btnTitle: {
+    color: "#FFFFFF",
+    justifyContent: "center",
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+  },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  default: {
+    width: 120,
     height: 120,
     position: "absolute",
-    left: 132,
+    left: 128,
     top: -60,
+    borderRadius: 16,
+    backgroundColor: "#F6F6F6",
+  },
+  delBtn: {
+    position: "absolute",
+    top: 80,
+    right: -12,
+    width: 25,
+    height: 25,
+    justifyContent: "center",
+    alignItems: "center",
   },
   form: {
     width: "auto",
@@ -196,13 +282,10 @@ const styles = StyleSheet.create({
     position: "relative",
     alignItems: "center",
   },
-  title: {
-    color: "#212121",
-    fontFamily: "Roboto-Medium",
-    fontSize: 30,
-    letterSpacing: 0.3,
-    marginTop: 92,
-    marginBottom: 33,
+  imageBG: {
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "stretch",
   },
   input: {
     width: 343,
@@ -226,25 +309,18 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Regular",
     fontSize: 16,
   },
-  btn: {
-    backgroundColor: "#FF6C00",
-    borderRadius: 100,
-    width: 343,
-    paddingHorizontal: 32,
-    paddingVertical: 16,
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  btnTitle: {
-    color: "#FFFFFF",
-    justifyContent: "center",
-    fontFamily: "Roboto-Regular",
-    fontSize: 16,
-  },
   linkTitle: {
     color: "#1B4371",
     fontFamily: "Roboto-Regular",
     fontSize: 16,
+  },
+  title: {
+    color: "#212121",
+    fontFamily: "Roboto-Medium",
+    fontSize: 30,
+    letterSpacing: 0.3,
+    marginTop: 92,
+    marginBottom: 33,
   },
 });
 
