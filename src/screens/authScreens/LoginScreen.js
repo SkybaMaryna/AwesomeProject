@@ -12,8 +12,8 @@ import {
   TouchableWithoutFeedback,
   Modal,
 } from "react-native";
-import { useDispatch } from "react-redux";
-import { AntDesign } from '@expo/vector-icons';
+import { useDispatch, useSelector } from "react-redux";
+import { AntDesign } from "@expo/vector-icons";
 import { useKeyboardVisible } from "../../hooks/useKeyboardVisible";
 import { authSignInUser } from "../../../redux/auth/authOperations";
 
@@ -28,14 +28,16 @@ const LoginScreen = ({ navigation }) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
   const [loginData, setLoginData] = useState(initialState);
   const [showError, setShowError] = useState(false);
+  const { stateChange } = useSelector((state) => state.auth);
 
   const isKeyboardVisible = useKeyboardVisible();
 
   const dispatch = useDispatch();
 
   const handleSubmit = async () => {
-    const result = dispatch(authSignInUser(loginData));
-    if (Object.keys(result).length === 4) {
+    const res = await dispatch(authSignInUser(loginData));
+
+    if (!res) {
       setShowError(true);
     } else {
       setLoginData(initialState);
@@ -144,7 +146,7 @@ const LoginScreen = ({ navigation }) => {
                   <View style={styles.modalContent}>
                     <Text>Невірний логін або пароль</Text>
                     <TouchableOpacity onPress={() => setShowError(false)}>
-                    <AntDesign name="closecircleo" size={24} color="black" />
+                      <AntDesign name="closecircleo" size={24} color="black" />
                     </TouchableOpacity>
                   </View>
                 </View>
