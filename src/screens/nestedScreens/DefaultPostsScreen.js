@@ -18,6 +18,7 @@ const DefaultPostsScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <FlatList
+        style={styles.list}
         data={posts}
         keyExtractor={(item) => item.id}
         renderItem={({ item: { coords, photo, title, locality, id } }) => (
@@ -42,6 +43,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
   },
+  list: {marginTop: 40}
 });
 
 export default DefaultPostsScreen;

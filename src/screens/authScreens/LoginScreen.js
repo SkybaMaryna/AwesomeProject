@@ -10,8 +10,10 @@ import {
   Platform,
   Keyboard,
   TouchableWithoutFeedback,
+  Modal,
 } from "react-native";
 import { useDispatch } from "react-redux";
+import { AntDesign } from '@expo/vector-icons';
 import { useKeyboardVisible } from "../../hooks/useKeyboardVisible";
 import { authSignInUser } from "../../../redux/auth/authOperations";
 
@@ -20,19 +22,24 @@ const initialState = {
   password: "",
 };
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({ navigation }) => {
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [isPasswordShown, setIsPasswordShown] = useState(false);
   const [loginData, setLoginData] = useState(initialState);
+  const [showError, setShowError] = useState(false);
 
   const isKeyboardVisible = useKeyboardVisible();
 
   const dispatch = useDispatch();
 
-  const handleSubmit = () => {
-    dispatch(authSignInUser(loginData));
-    setLoginData(initialState);
+  const handleSubmit = async () => {
+    const result = dispatch(authSignInUser(loginData));
+    if (Object.keys(result).length === 4) {
+      setShowError(true);
+    } else {
+      setLoginData(initialState);
+    }
   };
 
   return (
@@ -131,6 +138,17 @@ const LoginScreen = ({navigation}) => {
                   <Text style={styles.underlineLinkTitle}>Зареєструватися</Text>
                 </Text>
               </TouchableOpacity>
+
+              <Modal visible={showError} animationType="slide" transparent>
+                <View style={styles.modalContainer}>
+                  <View style={styles.modalContent}>
+                    <Text>Невірний логін або пароль</Text>
+                    <TouchableOpacity onPress={() => setShowError(false)}>
+                    <AntDesign name="closecircleo" size={24} color="black" />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Modal>
             </View>
           </KeyboardAvoidingView>
         </ImageBackground>
@@ -216,6 +234,21 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Regular",
     fontSize: 16,
     textDecorationLine: "underline",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 10,
+    alignItems: "center",
+    color: "#1B4371",
+    fontFamily: "Roboto-Regular",
+    gap: 10,
   },
 });
 

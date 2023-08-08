@@ -28,9 +28,6 @@ export const authSignUpUser =
         email: updatedUser.email,
         avatar: updatedUser.photoURL,
       };
-      console.log('====================================');
-      console.log(userUpdateProfile);
-      console.log('====================================');
       dispatch(updateUserProfile(userUpdateProfile));
     } catch (error) {
       console.log("error.message", error.message);
@@ -42,6 +39,7 @@ export const authSignInUser =
   async (dispatch, getState) => {
     try {
       const user = await signInWithEmailAndPassword(auth, email, password);
+      return user;
     } catch (error) {
       console.log("error.message", error.message);
     }
@@ -54,6 +52,8 @@ export const authStateChangeUser = () => async (dispatch, getState) => {
         const userUpdateProfile = {
           login: user.displayName,
           userId: user.uid,
+          email: user.email,
+          avatar: user.photoURL,
         };
 
         dispatch(authStateChange({ stateChange: true }));
